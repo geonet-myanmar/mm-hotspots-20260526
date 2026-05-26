@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FIRMS Myanmar Fire Dashboard</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="app-container">
+  <header class="app-header">
+    <div class="header-left">
+      <h1>FIRMS Myanmar Fire Dashboard</h1>
+      <p class="subtitle">NASA FIRMS Active Fire Data — 7-Day Analysis</p>
+    </div>
+    <div class="header-right">
+      <div class="last-updated" id="lastUpdated">Loading...</div>
+    </div>
+  </header>
+
+  <nav class="filter-bar" id="filterBar">
+    <div class="filter-group">
+      <label>Date Range</label>
+      <div class="date-inputs">
+        <input type="date" id="filterDateStart" />
+        <span>to</span>
+        <input type="date" id="filterDateEnd" />
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>Satellite</label>
+      <div class="satellite-checkboxes" id="satelliteFilters">
+        <label><input type="checkbox" value="NPP" checked /> NPP (VIIRS)</label>
+        <label><input type="checkbox" value="NOAA20" checked /> NOAA-20</label>
+        <label><input type="checkbox" value="NOAA21" checked /> NOAA-21</label>
+        <label><input type="checkbox" value="Terra" checked /> Terra (MODIS)</label>
+        <label><input type="checkbox" value="Aqua" checked /> Aqua (MODIS)</label>
+      </div>
+    </div>
+    <div class="filter-group">
+      <label>Min Confidence <span id="confidenceLabel">0%</span></label>
+      <input type="range" id="filterConfidence" min="0" max="100" value="0" />
+    </div>
+    <div class="filter-group">
+      <label>Day/Night</label>
+      <select id="filterDayNight">
+        <option value="all">All</option>
+        <option value="D">Day</option>
+        <option value="N">Night</option>
+      </select>
+    </div>
+    <button class="btn-reset" id="resetFilters">Reset Filters</button>
+  </nav>
+
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-card"><span class="stat-value" id="statTotal">—</span><span class="stat-label">Total Fires</span></div>
+    <div class="stat-card"><span class="stat-value" id="statLast24h">—</span><span class="stat-label">Last 24h</span></div>
+    <div class="stat-card"><span class="stat-value" id="statAvgConf">—</span><span class="stat-label">Avg Confidence</span></div>
+    <div class="stat-card"><span class="stat-value" id="statAvgFRP">—</span><span class="stat-label">Avg FRP (MW)</span></div>
+    <div class="stat-card"><span class="stat-value" id="statSatellites">—</span><span class="stat-label">Satellites</span></div>
+    <div class="stat-card"><span class="stat-value" id="statDayNight">—</span><span class="stat-label">Day/Night</span></div>
+  </div>
+
+  <div class="main-grid">
+    <div class="map-panel">
+      <div id="map"></div>
+      <div class="map-controls">
+        <button class="map-btn active" data-layer="clusters">Clusters</button>
+        <button class="map-btn" data-layer="heatmap">Heatmap</button>
+        <button class="map-btn" data-layer="both">Both</button>
+      </div>
+    </div>
+    <div class="sidebar-panel">
+      <div class="chart-box">
+        <h3>Daily Fire Count</h3>
+        <canvas id="dailyChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h3>Confidence Distribution</h3>
+        <canvas id="confidenceChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="bottom-row">
+    <div class="chart-box wide">
+      <h3>Temporal Trend: FRP Over Time</h3>
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+
+  <div class="data-table-section">
+    <h3>Fire Events <span class="table-count" id="tableCount"></span></h3>
+    <div class="table-wrapper">
+      <table id="dataTable">
+        <thead>
+          <tr>
+            <th data-sort="acq_date">Date</th>
+            <th data-sort="acq_time">Time</th>
+            <th data-sort="latitude">Latitude</th>
+            <th data-sort="longitude">Longitude</th>
+            <th data-sort="satellite">Satellite</th>
+            <th data-sort="confidence">Confidence</th>
+            <th data-sort="frp">FRP (MW)</th>
+            <th data-sort="brightness">Brightness (K)</th>
+            <th data-sort="daynight">Day/Night</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
